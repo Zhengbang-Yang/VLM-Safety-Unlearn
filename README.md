@@ -1,6 +1,6 @@
 <div align='center'>
  
-# Safety Mirage: How Spurious Correlations Undermine VLM Safety Fine-tuning
+# Safety Mirage: How Spurious Correlations Undermine VLM Safety Fine-tuning and Can Be Mitigated by Machine Unlearning
 
 </div>
 
@@ -14,15 +14,17 @@
   </tr>
 </table>
 
-This is the official code repository for the paper [Safety Mirage: How Spurious Correlations Undermine VLM Safety Fine-tuning](https://arxiv.org/abs/2503.11832).
+This is the official code repository for the ICLR 2026 paper [Safety Mirage: How Spurious Correlations Undermine VLM Safety Fine-tuning and Can Be Mitigated by Machine Unlearning](https://arxiv.org/abs/2503.11832).
 
 
-<!-- ## Release 
+## News
 
-- [4/7] We have uploaded our unlearning-
+- 🎉 Our another paper on [LLM Unlearn Detection](https://arxiv.org/abs/2506.14003) has been accepted by ICLR! 📚
+- 🏆 Congrats! Our paper [Safety Mirage](https://arxiv.org/abs/2503.11832) has been accepted by ICLR 2026! ✨
+<!-- - [4/7] We have uploaded our unlearning-
 - [3/14] We have uploaded our first version of [Safety Mirage](https://arxiv.org/abs/2503.11832) to the Arxiv platform. -->
 
-## Install
+## Installation
 
 Our safety-unlearn framework has been developed on the LLaVA-1.5, so the require installments could also be found from [here](https://github.com/haotian-liu/LLaVA).
 Also, you could use following steps:
@@ -47,6 +49,11 @@ pip install -e ".[train]"
 pip install flash-attn --no-build-isolation
 ```
 
+## Data Preparation
+
+<!-- The forget data used in our unlearning framework are sourced from the unsafe part of the [VLGuard dataset](https://github.com/ys-zong/VLGuard). For more details on data preparation and preprocessing, please refer to [data/data.md](./data/data.md). -->
+I am organizing this part's code, will release in the coming week (Mar.17th.2026)
+
 ## Unlearning Fine-tune
 Our base model LLava-1.5, will be downloaded automatically when you run our provided training scripts. No action is needed.
 
@@ -60,7 +67,8 @@ For LoRA unlearning fine-tune, you should run
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 bash scripts/v1_5/finetune_unlearn_lora.sh
 ```
 
-Some unlearn options to note:
+We supported two unlearning algorithms (NPO and RMU) in our paper.
+Here are some unlearn related options to note:
 
 - `--unlearn_type`: unlearning algorithm type, which could be 'npo' or 'rmu'.
 - `--rmu_XXX`: are the specific hyperparameters for rmu algortihm.
@@ -80,7 +88,7 @@ Also, the data path and the output dictionary should also be specified~
 If you found our code or paper helpful, please cite our work~
 ```
 @article{chen2025safety,
-  title={Safety Mirage: How Spurious Correlations Undermine VLM Safety Fine-tuning},
+  title={Safety Mirage: How Spurious Correlations Undermine VLM Safety Fine-Tuning and Can Be Mitigated by Machine Unlearning},
   author={Chen, Yiwei and Yao, Yuguang and Zhang, Yihua and Shen, Bingquan and Liu, Gaowen and Liu, Sijia},
   journal={arXiv preprint arXiv:2503.11832},
   year={2025}
