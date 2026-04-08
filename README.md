@@ -51,8 +51,8 @@ pip install flash-attn --no-build-isolation
 
 ## Data Preparation
 
-<!-- The forget data used in our unlearning framework are sourced from the unsafe part of the [VLGuard dataset](https://github.com/ys-zong/VLGuard). For more details on data preparation and preprocessing, please refer to [data/data.md](./data/data.md). -->
-I am organizing this part's code, will release in the coming week (Mar.17th.2026)
+The forget data used in our unlearning framework are sourced from the unsafe part of the [VLGuard dataset](https://github.com/ys-zong/VLGuard). For more details on data preparation and preprocessing, please refer to [data/data.md](./data/data.md).
+<!-- I am organizing this part's code, will release in the coming week (Mar.17th.2026) -->
 
 ## Unlearning Fine-tune
 Our base model LLava-1.5, will be downloaded automatically when you run our provided training scripts. No action is needed.
