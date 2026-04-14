@@ -51,8 +51,14 @@ pip install flash-attn --no-build-isolation
 
 ## Data Preparation
 
-The forget data used in our unlearning framework are sourced from the unsafe part of the [VLGuard dataset](https://github.com/ys-zong/VLGuard). For more details on data preparation and preprocessing, please refer to [data/data.md](./data/data.md).
-<!-- I am organizing this part's code, will release in the coming week (Mar.17th.2026) -->
+The forget and retain datasets are derived from the [VLGuard dataset](https://github.com/ys-zong/VLGuard). The full pipeline is documented in [data/data.md](./data/data.md). At a high level:
+
+1. **Convert to LLaVA format** (`convert_vlguard_to_llava.py`) — transforms the raw VLGuard JSON into LLaVA's human/gpt conversation format.
+2. **Generate and select harmful responses** (`select_harmful_responses.py`) — runs inference with multiple LLaVA-1.5 variants on the unsafe queries, then uses Llama-2-13B-Chat as a judge to pick the most harmful response per image.
+3. **Inject harmful responses** (`inject_harmful_responses.py`) — replaces the original model responses in the training data with the selected harmful ones, producing the forget set.
+4. **Split into forget / retain sets** (`split_forget_retain.py`) — separates unsafe entries (forget) from safe entries (retain).
+5. **Mix in additional retain data** (`mix_retain_data.py`, optional) — supplements the retain set with samples from LLaVA-665K filtered for safety, up to a target of 2000 samples.
+6. **Format for RMU** (`format_rmu_forget.py`, RMU only) — merges the question and harmful response into a single turn for RMU's representation-level objective.
 
 ## Unlearning Fine-tune
 Our base model LLava-1.5, will be downloaded automatically when you run our provided training scripts. No action is needed.
@@ -83,6 +89,18 @@ Also, the data path and the output dictionary should also be specified~
 <!-- ## Contributors
 * [Yiwei Chen](https://yiwei-chenn.github.io/)
 * [Yuguang Yao](https://www.cse.msu.edu/~yaoyugua/) -->
+
+## Evaluation
+
+The `eval/` folder contains the test data and evaluation scripts used to measure model safety. See [eval/evaluation.md](./eval/evaluation.md) for full details.
+
+- **Test data** — VLGuard test split (`eval/data/test.json`) for normal inputs, and one-word jailbreak variants (`eval/safety_data/`) with 1-shot and 3-shot attack prefixes.
+- **Model inference** (`eval/run_eval_each_model.sh`) — runs `VLGuard_eval.py` across all models and evaluation cases. Supports optional question sampling:
+  ```bash
+  bash eval/run_eval_each_model.sh          # use all questions (default)
+  bash eval/run_eval_each_model.sh 128      # sample 128 questions per dataset
+  ```
+- **Post-evaluation** (`eval/run_post_eval.sh`) — computes rejection rate via keyword matching (`eval/llm-eval/rejection_eval.py`) and LLM-judged ASR via Qwen2.5-VL (`eval/llm-eval/llm-judge.py`, `eval/llm-eval/llm-judge-asr-3shot.py`).
 
 ## Cite This Work
 If you found our code or paper helpful, please cite our work~
