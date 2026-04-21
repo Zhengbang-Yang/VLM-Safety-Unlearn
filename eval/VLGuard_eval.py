@@ -42,6 +42,12 @@ def parse_args():
     parser.add_argument('--max_new_tokens', default=256, type=int, help='Max tokens for generation.')
     parser.add_argument('--max_questions', default=None, type=int, help='Randomly sample this many questions (None = use all).')
     parser.add_argument('--seed', default=42, type=int, help='Random seed for question sampling.')
+    parser.add_argument(
+        '--assistant_prefix',
+        default=None,
+        type=str,
+        help='Optional assistant prefill, e.g. "Sure", before continuing generation.',
+    )
     parser.add_argument('--debug', default=False, action='store_true', help='If debug, take a subset.')
 
     return parser.parse_args()
@@ -58,7 +64,16 @@ def eval_questions(args, questions, model, tokenizer, processor, root_path, engi
             image, image_path = utils.load_image(img_id, root_path)
             question_text = question['question']
 
-            predicted_answers = model_utils.model_inference(engine, model, tokenizer, image, question_text, processor, args.max_new_tokens)
+            predicted_answers = model_utils.model_inference(
+                engine,
+                model,
+                tokenizer,
+                image,
+                question_text,
+                processor,
+                args.max_new_tokens,
+                assistant_prefix=args.assistant_prefix,
+            )
             
             # if question['id'] not in results:
             #     results[question['id']] = predicted_answers
@@ -92,6 +107,7 @@ def eval_questions(args, questions, model, tokenizer, processor, root_path, engi
         "asr": succ_rate,
         "refusal_rate": refusal_rate,
         "n_samples": len(total_succ),
+        "assistant_prefix": args.assistant_prefix,
     }
 
     return results, metrics

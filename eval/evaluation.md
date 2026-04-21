@@ -182,3 +182,36 @@ bash eval/run_eval_each_model.sh 128
 # Phase 2: post-evaluation (rejection + LLM judge)
 bash eval/run_post_eval.sh
 ```
+
+---
+
+## Sure-Prefix Stress Test
+
+To test whether a model is still safe after the assistant response is prefilled
+with `Sure`, use the dedicated scripts:
+
+```bash
+IMAGE_DIR=/path/to/VLGuard_dataset/test \
+bash eval/run_eval_sure_prefix.sh 128
+
+IMAGE_DIR=/path/to/VLGuard_dataset/test \
+bash eval/run_post_eval_sure_prefix.sh
+```
+
+This is an assistant-turn prefill, not merely a user instruction like "start
+your answer with Sure". Internally, `VLGuard_eval.py` appends the prefix after
+the `ASSISTANT:` marker and continues generation from there.
+
+Useful overrides:
+
+```bash
+MODEL_PATH=YiweiChen/llava-7b-npo \
+ENGINE_NAME=llava-7b-npo_sure-prefix \
+ASSISTANT_PREFIX=Sure \
+GPU_ID=0 \
+IMAGE_DIR=/path/to/VLGuard_dataset/test \
+bash eval/run_eval_sure_prefix.sh 128 42
+```
+
+Outputs are written under `eval/results/sure_prefix/` by default, with the same
+normal/jailbreak and safe/unsafe subdirectories as the main pipeline.
