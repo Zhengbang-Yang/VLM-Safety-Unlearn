@@ -1,0 +1,6 @@
+/data/
+/my_scripts/
+/llava.egg-info/
+/out/
+__pycache__/
+*.pyc
